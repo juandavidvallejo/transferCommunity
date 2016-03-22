@@ -11,7 +11,7 @@ class GirosSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Giros
-        fields = ('id', 'sender',  'receiver', 'correspondent', 'content', 'amount','commission' ,'created_at', 'state')
+        fields = ('id', 'sender',  'receiver', 'correspondent', 'amount','commission' ,'created_at', 'state')
         read_only_fields = ('id', 'created_at', 'amount')
 
     def get_validation_exclusions(self, *args, **kwargs):

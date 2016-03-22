@@ -4,17 +4,17 @@ from rest_framework import serializers
 
 from authentication.models import Account, DocumentType, City, Province
 
-class DocumentTypeSerializer(serializers.HyperlinkedModelSerializer):
+class DocumentTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocumentType  
         fields = ('id', 'name')
     
-class ProvinceSerializer(serializers.HyperlinkedModelSerializer):
+class ProvinceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Province  
         fields = ('id', 'name')
 
-class CitySerializer(serializers.HyperlinkedModelSerializer):
+class CitySerializer(serializers.ModelSerializer):
     province = ProvinceSerializer()
 
     class Meta:
@@ -24,8 +24,6 @@ class CitySerializer(serializers.HyperlinkedModelSerializer):
 class AccountSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
     confirm_password = serializers.CharField(write_only=True, required=False)
-    document_type = DocumentTypeSerializer()
-    city = CitySerializer()
 
 
     class Meta:
