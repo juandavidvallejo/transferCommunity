@@ -1,13 +1,30 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
+from miscellaneous.models import Bank
+
+
+VALIDATION_STATE = (
+    ('0', 'NO'),
+    ('1', 'SENT'),
+    ('2', 'RECEIVED'),
+)
+USER_ID_TYPE = (
+    ('0', 'CC'),
+    ('1', 'CE'),
+    ('2', 'PASAPORTE'),
+)
+
+
 
 class DocumentType(models.Model):
     name = models.CharField(max_length=200, null=True)
 
 class Province(models.Model):
+    dane_code = models.IntegerField()
     name = models.CharField(max_length=200, null=True)
 
 class City(models.Model):
+    dane_code = models.IntegerField()
     name = models.CharField(max_length=200, null=True)
     province = models.ForeignKey(Province)
 
@@ -37,13 +54,20 @@ class AccountManager(BaseUserManager):
         return account
 
 class Account(AbstractBaseUser):
-    email = models.EmailField(unique=True)
+
+    document_type = models.ForeignKey(DocumentType)
+    num_id=models.CharField(max_length=40, blank=True)
     username = models.CharField(max_length=40, unique=True)
 
     first_name = models.CharField(max_length=40, blank=True)
     last_name = models.CharField(max_length=40, blank=True)
     mobile_number = models.CharField(max_length=40, blank=True)
+    phone_number =models.CharField(max_length=40, blank=True)
+
+    email = models.EmailField(unique=True)
     location = models.CharField(max_length=40, blank=True)
+    address =models.CharField(max_length=200, blank=True)
+    city = models.ForeignKey(City)
 
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True, blank=True)
@@ -54,14 +78,36 @@ class Account(AbstractBaseUser):
     updated_at = models.DateTimeField(auto_now=True)
 
     genere = models.CharField(max_length=40, blank=True)
+    income_source=models.CharField(max_length=400, blank=True)
 
-    document_type = models.ForeignKey(DocumentType)
-    city = models.ForeignKey(City)
+    credit_card=models.CharField(max_length=16, blank=True)
+    valid_code_credit_card=models.CharField(max_length=3, blank=True)
+
+    SMS_code=models.CharField(max_length=8, blank=True)
+    sender_status=models.BooleanField(default=True)
+    correspondent_status=models.BooleanField(default=False)
+    correspondent_sender=models.BooleanField(default=False)
+    correspondent_receiver=models.BooleanField(default=False)
+    latitude=models.FloatField()
+    longitude=models.FloatField()
+
+    bank_account=models.IntegerField()
+    bank=models.ForeignKey(Bank)
+
+    max_mount_receiver=models.IntegerField()
+    max_mount_delivery=models.IntegerField()
 
     objects = AccountManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
+
+    email_validation = models.CharField(max_length=20, choices=VALIDATION_STATE)
+    mobile_validation = models.CharField(max_length=20, choices=VALIDATION_STATE)
+
+
+
+
 
     def __unicode__(self):
         return self.email
@@ -72,3 +118,8 @@ class Account(AbstractBaseUser):
     def get_short_name(self):
         return self.first_name
 
+
+class Document(models.Model):
+    user = models.ForeignKey(Account, related_name='user')
+    type = models.CharField(max_length=1, choices=USER_ID_TYPE)
+    image_path =models.FileField()
