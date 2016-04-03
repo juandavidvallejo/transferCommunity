@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'authentication',
     'giros',
+    'miscellaneous',
 ]
 
 MIDDLEWARE_CLASSES = [
