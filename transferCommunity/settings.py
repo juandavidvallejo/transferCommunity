@@ -80,11 +80,11 @@ WSGI_APPLICATION = 'transferCommunity.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'transfercommunity',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'HOST': 'transfercommunity.cbvfzor8r6v6.us-west-2.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
         'PORT': '5432',
     }
 }
