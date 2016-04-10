@@ -22,7 +22,7 @@ urlpatterns = [
 	 url(r'^api/v1/auth/logout/$', LogoutView.as_view(), name='logout'),
   	 url(r'^api/v1/', include(accounts_router.urls)),
   	 url(r'^departamentos/$', DepartamentosView.as_view(), name='departamentos'),
-  	 url(r'^departamentos/(?P<dane>[-\w]+)/municipios$', DepartamentosIdView.as_view(), name='departamentos-municipios'),
+  	 url(r'^departamentos/(?P<dane>[-\w]+)/$', DepartamentosIdView.as_view(), name='departamentos-municipios'),
  ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

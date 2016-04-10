@@ -61,3 +61,4 @@ class MuniciposSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = City
+        fields = ('name', 'dane_code', 'province')

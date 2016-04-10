@@ -79,5 +79,5 @@ class DepartamentosIdView(generics.ListAPIView):
 
     def get_queryset(self):
         dane = self.kwargs['dane']
-        return City.objects.filter(province=dane)
+        return City.objects.filter(province__dane_code=dane)
 
