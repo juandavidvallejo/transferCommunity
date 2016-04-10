@@ -1,7 +1,7 @@
-from rest_framework import permissions, viewsets
-from authentication.models import Account
+from rest_framework import permissions, viewsets, generics
+from authentication.models import Account, Province, City
 from authentication.permissions import IsAccountOwner
-from authentication.serializers import AccountSerializer
+from authentication.serializers import AccountSerializer, DepartamentoSerializer,MuniciposSerializer
 from django.utils.decorators import method_decorator
 from rest_framework.response import Response
 import json
@@ -69,3 +69,15 @@ class LogoutView(views.APIView):
         logout(request)
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+class DepartamentosView(generics.ListAPIView):
+    serializer_class = DepartamentoSerializer
+    queryset = Province.objects.all()
+
+class DepartamentosIdView(generics.ListAPIView):
+    serializer_class = MuniciposSerializer
+
+    def get_queryset(self):
+        dane = self.kwargs['dane']
+        return City.objects.filter(province=dane)
+

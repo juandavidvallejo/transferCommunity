@@ -51,3 +51,13 @@ class AccountSerializer(serializers.ModelSerializer):
             update_session_auth_hash(self.context.get('request'), instance)
 
             return instance
+
+class DepartamentoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Province
+
+class MuniciposSerializer(serializers.ModelSerializer):
+    province = DepartamentoSerializer()
+
+    class Meta:
+        model = City

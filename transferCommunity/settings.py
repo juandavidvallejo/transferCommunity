@@ -82,11 +82,11 @@ WSGI_APPLICATION = 'transferCommunity.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
+        'NAME': 'transfercommunity',
+        'USER': 'postgres',
+        'PASSWORD': 'transfer',
+        'HOST': 'transfercommunity.cbvfzor8r6v6.us-west-2.rds.amazonaws.com',
+        'PORT': 5432,
     }
 }
 
