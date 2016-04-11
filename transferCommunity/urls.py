@@ -2,17 +2,17 @@ from django.conf.urls import patterns, url, include
 from django.contrib import admin
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework_nested import routers
-from authentication.views import AccountViewSet, LoginView, LogoutView, DepartamentosView, DepartamentosIdView
+from authentication.views import AccountViewSet, LoginView, LogoutView, DepartamentosView, DepartamentosIdView, ConsultaCorresponsalView
 from giros.views import AccountGirosViewSet, GirosViewSet
 
 router = routers.SimpleRouter()
 router.register(r'accounts', AccountViewSet)
-router.register(r'giros', GirosViewSet)
+#router.register(r'giros', GirosViewSet)
 
 accounts_router = routers.NestedSimpleRouter(
     router, r'accounts', lookup='account'
 )
-accounts_router.register(r'giros', AccountGirosViewSet)
+#accounts_router.register(r'giros', AccountGirosViewSet)
 
 urlpatterns = [
      url(r'^admin/', include(admin.site.urls)),
@@ -23,6 +23,7 @@ urlpatterns = [
   	 url(r'^api/v1/', include(accounts_router.urls)),
   	 url(r'^departamentos/$', DepartamentosView.as_view(), name='departamentos'),
   	 url(r'^departamentos/(?P<dane>[-\w]+)/$', DepartamentosIdView.as_view(), name='departamentos-municipios'),
+   	 url(r'^consultaCorresponsal/$', ConsultaCorresponsalView.as_view(), name='corresponsal'),
  ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

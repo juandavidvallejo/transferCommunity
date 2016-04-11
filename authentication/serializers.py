@@ -62,3 +62,15 @@ class MuniciposSerializer(serializers.ModelSerializer):
     class Meta:
         model = City
         fields = ('name', 'dane_code', 'province')
+
+class CorresponsalSerializer(serializers.ModelSerializer):
+    distance = serializers.SerializerMethodField('descre')
+   
+    def descre(self, obj):
+        print obj
+        data = obj.getDistancia()
+        return data
+    
+    class Meta:
+        model = Account
+        fields = ('id', 'first_name', 'last_name', 'mobile_number', 'location', 'city', 'longitude','latitude','distance',)

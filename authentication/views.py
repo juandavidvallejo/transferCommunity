@@ -1,12 +1,13 @@
 from rest_framework import permissions, viewsets, generics
 from authentication.models import Account, Province, City
 from authentication.permissions import IsAccountOwner
-from authentication.serializers import AccountSerializer, DepartamentoSerializer,MuniciposSerializer
+from authentication.serializers import AccountSerializer, DepartamentoSerializer,MuniciposSerializer, CorresponsalSerializer
 from django.utils.decorators import method_decorator
 from rest_framework.response import Response
 import json
 from django.contrib.auth import authenticate, login, logout
 from rest_framework import status, views, permissions
+
 
 class AccountViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
@@ -81,3 +82,19 @@ class DepartamentosIdView(generics.ListAPIView):
         dane = self.kwargs['dane']
         return City.objects.filter(province__dane_code=dane)
 
+class ConsultaCorresponsalView(generics.ListAPIView):
+    serializer_class = CorresponsalSerializer
+    
+    def get_queryset(self):
+        queryset = Account.objects.all()
+        for i in self.request.GET:
+            if i == 'longitud':
+                longitud = self.request.GET.get('longitud')
+            if i == 'latitud':
+                latitud = self.request.GET.get('latitud')
+            if i == 'monto':
+                monto = self.request.GET.get('monto')
+            if i == 'ciudad':
+                ciudad = self.request.GET.get('ciudad')
+        #print longitud,latitud,monto,ciudad
+        return longitud, latitud, monto, ciudad

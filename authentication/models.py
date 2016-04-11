@@ -1,7 +1,8 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 from miscellaneous.models import Bank
-
+import psycopg2
+import os
 
 VALIDATION_STATE = (
     ('0', 'NO'),
@@ -88,14 +89,14 @@ class Account(AbstractBaseUser):
     correspondent_status=models.BooleanField(default=False)
     correspondent_sender=models.BooleanField(default=False)
     correspondent_receiver=models.BooleanField(default=False)
-    latitude=models.FloatField()
-    longitude=models.FloatField()
+    latitude=models.FloatField(blank=True)
+    longitude=models.FloatField(blank=True)
 
-    bank_account=models.IntegerField()
-    bank=models.ForeignKey(Bank)
+    bank_account=models.IntegerField(blank=True)
+    bank=models.ForeignKey(Bank, blank=True)
 
-    max_mount_receiver=models.IntegerField()
-    max_mount_delivery=models.IntegerField()
+    max_mount_receiver=models.IntegerField(blank=True)
+    max_mount_delivery=models.IntegerField(blank=True)
 
     objects = AccountManager()
 
@@ -104,9 +105,6 @@ class Account(AbstractBaseUser):
 
     email_validation = models.CharField(max_length=20, choices=VALIDATION_STATE)
     mobile_validation = models.CharField(max_length=20, choices=VALIDATION_STATE)
-
-
-
 
 
     def __unicode__(self):
@@ -118,6 +116,22 @@ class Account(AbstractBaseUser):
     def get_short_name(self):
         return self.first_name
 
+    def get_params(self):
+        prueba = request.GET.get['longitud']
+        print prueba
+        #return self
+
+    def getDistancia(self):
+        conn=psycopg2.connect(host='transfercommunity.cbvfzor8r6v6.us-west-2.rds.amazonaws.com', user='postgres', password='1nt3gr4d0r',database='transfercommunity')
+        cursor = conn.cursor()
+        cursor.execute("SELECT SQRT(POW(4.6021898201365055-authentication_account.longitude,2)+POW(-74.0654952957932-authentication_account.latitude,2)) AS distancia FROM authentication_account INNER JOIN authentication_city ON authentication_account.city_id=authentication_city.id WHERE authentication_account.max_mount_receiver>=500000 ORDER BY distancia LIMIT 5;")
+        #cursor.execute("SELECT SQRT(POW(4.6021898201365055-authentication_account.longitude,2)+POW(-74.0654952957932-authentication_account.latitude,2)) AS distancia FROM authentication_account INNER JOIN authentication_city ON city_id=authentication_city.id WHERE max_mount_receiver>=500000 AND authentication_city.dane_code=587 ORDER BY distancia LIMIT 5;")
+        #cursor.execute("SELECT id FROM authentication_account WHERE id=1;"), (longitud,latitud,monto,ciudad,)
+        distancia = cursor.fetchone()
+        #print distancia
+        #cursor.close()
+        #conn.close()
+        return distancia
 
 class Document(models.Model):
     user = models.ForeignKey(Account, related_name='user')

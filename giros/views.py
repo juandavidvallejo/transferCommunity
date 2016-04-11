@@ -8,9 +8,10 @@ from giros.serializers import GirosSerializer
 
 
 class GirosViewSet(viewsets.ModelViewSet):
+    ##usuario, monto, longitud, latitud, tipo
     queryset = Giros.objects.order_by('-created_at')
     serializer_class = GirosSerializer
-    renderer_classes = [JSONRenderer]
+    #renderer_classes = [JSONRenderer]
 
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
