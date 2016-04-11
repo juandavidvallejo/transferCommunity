@@ -85,8 +85,7 @@ class DepartamentosIdView(generics.ListAPIView):
 class ConsultaCorresponsalView(generics.ListAPIView):
     serializer_class = CorresponsalSerializer
     
-    def get_queryset(self):
-        queryset = Account.objects.all()
+    def get_serializer_context(self):
         for i in self.request.GET:
             if i == 'longitud':
                 longitud = self.request.GET.get('longitud')
@@ -96,5 +95,17 @@ class ConsultaCorresponsalView(generics.ListAPIView):
                 monto = self.request.GET.get('monto')
             if i == 'ciudad':
                 ciudad = self.request.GET.get('ciudad')
-        #print longitud,latitud,monto,ciudad
-        return longitud, latitud, monto, ciudad
+        return {'longitud':longitud, 'latitud':latitud, 'monto': monto, 'ciudad': ciudad}
+
+    def get_queryset(self):
+        queryset = Account.objects.all()
+        for i in self.request.GET:
+            if i == 'monto':
+                monto = self.request.GET.get('monto')
+                queryset =  queryset.filter(max_mount_receiver__gte=monto)
+            if i == 'ciudad':
+                ciudad = self.request.GET.get('ciudad')
+                city = City.objects.filter(dane_code=ciudad)
+                queryset = queryset.filter(city=city)
+        return queryset
+        

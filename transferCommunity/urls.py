@@ -4,6 +4,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework_nested import routers
 from authentication.views import AccountViewSet, LoginView, LogoutView, DepartamentosView, DepartamentosIdView, ConsultaCorresponsalView
 from giros.views import AccountGirosViewSet, GirosViewSet
+from authentication import models
 
 router = routers.SimpleRouter()
 router.register(r'accounts', AccountViewSet)
@@ -17,9 +18,9 @@ accounts_router = routers.NestedSimpleRouter(
 urlpatterns = [
      url(r'^admin/', include(admin.site.urls)),
      url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-	 url(r'^api/v1/', include(router.urls)),
-	 url(r'^api/v1/auth/login/$', LoginView.as_view(), name='login'),
-	 url(r'^api/v1/auth/logout/$', LogoutView.as_view(), name='logout'),
+	   url(r'^api/v1/', include(router.urls)),
+	   url(r'^api/v1/auth/login/$', LoginView.as_view(), name='login'),
+	   url(r'^api/v1/auth/logout/$', LogoutView.as_view(), name='logout'),
   	 url(r'^api/v1/', include(accounts_router.urls)),
   	 url(r'^departamentos/$', DepartamentosView.as_view(), name='departamentos'),
   	 url(r'^departamentos/(?P<dane>[-\w]+)/$', DepartamentosIdView.as_view(), name='departamentos-municipios'),

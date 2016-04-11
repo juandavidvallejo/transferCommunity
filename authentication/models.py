@@ -4,6 +4,8 @@ from miscellaneous.models import Bank
 import psycopg2
 import os
 
+conn=psycopg2.connect(host='transfercommunity.cbvfzor8r6v6.us-west-2.rds.amazonaws.com', user='postgres', password='1nt3gr4d0r',database='transfercommunity')
+
 VALIDATION_STATE = (
     ('0', 'NO'),
     ('1', 'SENT'),
@@ -116,22 +118,13 @@ class Account(AbstractBaseUser):
     def get_short_name(self):
         return self.first_name
 
-    def get_params(self):
-        prueba = request.GET.get['longitud']
-        print prueba
-        #return self
-
-    def getDistancia(self):
-        conn=psycopg2.connect(host='transfercommunity.cbvfzor8r6v6.us-west-2.rds.amazonaws.com', user='postgres', password='1nt3gr4d0r',database='transfercommunity')
+    def getDistancia(self, longitud, latitud, monto, ciudad):
         cursor = conn.cursor()
-        cursor.execute("SELECT SQRT(POW(4.6021898201365055-authentication_account.longitude,2)+POW(-74.0654952957932-authentication_account.latitude,2)) AS distancia FROM authentication_account INNER JOIN authentication_city ON authentication_account.city_id=authentication_city.id WHERE authentication_account.max_mount_receiver>=500000 ORDER BY distancia LIMIT 5;")
-        #cursor.execute("SELECT SQRT(POW(4.6021898201365055-authentication_account.longitude,2)+POW(-74.0654952957932-authentication_account.latitude,2)) AS distancia FROM authentication_account INNER JOIN authentication_city ON city_id=authentication_city.id WHERE max_mount_receiver>=500000 AND authentication_city.dane_code=587 ORDER BY distancia LIMIT 5;")
-        #cursor.execute("SELECT id FROM authentication_account WHERE id=1;"), (longitud,latitud,monto,ciudad,)
+        cursor.execute("SELECT SQRT(POW(%s-authentication_account.longitude,2)+POW(%s-authentication_account.latitude,2)) AS distancia FROM authentication_account INNER JOIN authentication_city ON authentication_account.city_id=authentication_city.id WHERE authentication_account.max_mount_receiver>=%s AND authentication_city.dane_code=%s AND authentication_account.id=%s ORDER BY distancia LIMIT 5;", (longitud,latitud,monto,ciudad, self.pk))
         distancia = cursor.fetchone()
-        #print distancia
-        #cursor.close()
-        #conn.close()
+        cursor.close()
         return distancia
+
 
 class Document(models.Model):
     user = models.ForeignKey(Account, related_name='user')
