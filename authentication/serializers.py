@@ -69,7 +69,7 @@ class CorresponsalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ('id', 'first_name', 'last_name', 'location', 'city', 'distance',)   
+        fields = ('id', 'first_name', 'last_name', 'location', 'longitude','latitude','city', 'distance',)   
     
     def descre(self, obj):
         longitud = self.context.get('longitud')
