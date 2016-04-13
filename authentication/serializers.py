@@ -55,6 +55,7 @@ class AccountSerializer(serializers.ModelSerializer):
 class DepartamentoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Province
+        resource_name = 'departamentos'
 
 class MuniciposSerializer(serializers.ModelSerializer):
     province = DepartamentoSerializer()

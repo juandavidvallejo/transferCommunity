@@ -7,7 +7,7 @@ from rest_framework.response import Response
 import json
 from django.contrib.auth import authenticate, login, logout
 from rest_framework import status, views, permissions
-
+from rest_framework.renderers import JSONRenderer
 
 class AccountViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'

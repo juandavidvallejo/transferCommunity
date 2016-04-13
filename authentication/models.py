@@ -26,10 +26,16 @@ class Province(models.Model):
     dane_code = models.IntegerField()
     name = models.CharField(max_length=200, null=True)
 
+    class Meta:
+        ordering = ('name',)
+
 class City(models.Model):
     dane_code = models.IntegerField()
     name = models.CharField(max_length=200, null=True)
     province = models.ForeignKey(Province)
+
+    class Meta:
+        ordering = ('name',)
 
 class AccountManager(BaseUserManager):
     def create_user(self, email, password=None, **kwargs):
