@@ -17,7 +17,11 @@ USER_ID_TYPE = (
     ('2', 'PASAPORTE'),
 )
 
-
+USER_TYPE = (
+    ('0', 'receiver'),
+    ('1', 'sender'),
+    ('2', 'any'),
+)
 
 class DocumentType(models.Model):
     name = models.CharField(max_length=200, null=True)
@@ -82,6 +86,8 @@ class Account(AbstractBaseUser):
     is_active = models.BooleanField(default=True, blank=True)
 
     rol = models.CharField(max_length=45,  blank=True)
+
+    correspondent_type = models.CharField(max_length=20, blank=True, choices=USER_TYPE)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

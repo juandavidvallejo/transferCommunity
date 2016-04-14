@@ -3,7 +3,7 @@ from django.contrib import admin
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework_nested import routers
 from authentication.views import AccountViewSet, LoginView, LogoutView, DepartamentosView, DepartamentosIdView, ConsultaCorresponsalView
-from giros.views import AccountGirosViewSet, GirosViewSet
+from giros.views import AccountGirosViewSet, GirosView
 from authentication import models
 
 router = routers.SimpleRouter()
@@ -25,6 +25,7 @@ urlpatterns = [
   	 url(r'^departamentos/$', DepartamentosView.as_view(), name='departamentos'),
   	 url(r'^departamentos/(?P<dane>[-\w]+)/$', DepartamentosIdView.as_view(), name='departamentos-municipios'),
    	 url(r'^consultaCorresponsal/$', ConsultaCorresponsalView.as_view(), name='corresponsal'),
+     url(r'^iniciarGiro/$', GirosView.as_view(), name='iniciar-giro'),
  ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -5,16 +5,9 @@ from giros.models import Giros
 
 
 class GirosSerializer(serializers.ModelSerializer):
-    sender = AccountSerializer(read_only=True, required=False)
-    receiver = AccountSerializer(read_only=True, required=False)
-    correspondent = AccountSerializer(read_only=True, required=False)
 
     class Meta:
         model = Giros
-        fields = ('id', 'sender',  'receiver', 'correspondent', 'amount','commission' ,'created_at', 'state')
-        read_only_fields = ('id', 'created_at', 'amount')
-
-    def get_validation_exclusions(self, *args, **kwargs):
-        exclusions = super(PostSerializer, self).get_validation_exclusions()
-
-        return exclusions + ['sender']
+        fields = ('id', 'sender', 'amount', 'receiver', 'mobile_receiver','document_type_receiver', 'document_receiver', 
+            'city_receiver', 'correspondent_receiver', 'commission_total', 'commission_correspondent_receiver', 'commission_correspondent_delivery','created_at', 'correspondent_delivery')
+        read_only_fields = ('id', 'created_at',)

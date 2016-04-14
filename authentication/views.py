@@ -98,8 +98,11 @@ class ConsultaCorresponsalView(generics.ListAPIView):
         return {'longitud':longitud, 'latitud':latitud, 'monto': monto, 'ciudad': ciudad}
 
     def get_queryset(self):
-        queryset = Account.objects.all()
+        queryset = Account.objects.filter(correspondent_type=0)
         for i in self.request.GET:
+            if i == 'tipo':
+                tipo = self.request.GET.get('tipo')
+                queryset =  queryset.filter(correspondent_type=tipo)
             if i == 'monto':
                 monto = self.request.GET.get('monto')
                 queryset =  queryset.filter(max_mount_receiver__gte=monto)
