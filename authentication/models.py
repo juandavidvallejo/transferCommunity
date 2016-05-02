@@ -50,7 +50,7 @@ class AccountManager(BaseUserManager):
             raise ValueError('Users must have a valid username.')
 
         account = self.model(
-            email=self.normalize_email(email), username=kwargs.get('username'), first_name=kwargs.get('first_name'), last_name=kwargs.get('last_name'), mobile_number=kwargs.get('mobile_number'), location=kwargs.get('location'), rol=kwargs.get('rol'), genere=kwargs.get('genere'), document_type=kwargs.get('document_type'), city=kwargs.get('city')
+            email=self.normalize_email(email), username=kwargs.get('username'), first_name=kwargs.get('first_name'), last_name=kwargs.get('last_name'), mobile_number=kwargs.get('mobile_number'),  document_type=kwargs.get('document_type'), num_id=kwargs.get('num_id')
         )
 
         account.set_password(password)
@@ -75,50 +75,50 @@ class Account(AbstractBaseUser):
     first_name = models.CharField(max_length=40, blank=True)
     last_name = models.CharField(max_length=40, blank=True)
     mobile_number = models.CharField(max_length=40, blank=True)
-    phone_number =models.CharField(max_length=40, blank=True)
+    phone_number =models.CharField(null=True, max_length=40, blank=True)
 
     email = models.EmailField(unique=True)
-    location = models.CharField(max_length=40, blank=True)
-    address =models.CharField(max_length=200, blank=True)
-    city = models.ForeignKey(City)
+    location = models.CharField(null=True, max_length=40, blank=True)
+    address =models.CharField(null=True, max_length=200, blank=True)
+    city = models.ForeignKey(City, null=True)
 
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True, blank=True)
 
-    rol = models.CharField(max_length=45,  blank=True)
+    rol = models.CharField(null=True, max_length=45,  blank=True)
 
-    correspondent_type = models.CharField(max_length=20, blank=True, choices=USER_TYPE)
+    correspondent_type = models.CharField(null=True, max_length=20, blank=True, choices=USER_TYPE)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    genere = models.CharField(max_length=40, blank=True)
-    income_source=models.CharField(max_length=400, blank=True)
+    genere = models.CharField(null=True, max_length=40, blank=True)
+    income_source=models.CharField(null=True, max_length=400, blank=True)
 
-    credit_card=models.CharField(max_length=16, blank=True)
-    valid_code_credit_card=models.CharField(max_length=3, blank=True)
+    credit_card=models.CharField(null=True, max_length=16, blank=True)
+    valid_code_credit_card=models.CharField(null=True, max_length=3, blank=True)
 
-    SMS_code=models.CharField(max_length=8, blank=True)
+    SMS_code=models.CharField(null=True, max_length=8, blank=True)
     sender_status=models.BooleanField(default=True)
     correspondent_status=models.BooleanField(default=False)
     correspondent_sender=models.BooleanField(default=False)
     correspondent_receiver=models.BooleanField(default=False)
-    latitude=models.FloatField(blank=True)
-    longitude=models.FloatField(blank=True)
+    latitude=models.FloatField(null=True, blank=True)
+    longitude=models.FloatField(null=True, blank=True)
 
-    bank_account=models.IntegerField(blank=True)
-    bank=models.ForeignKey(Bank, blank=True)
+    bank_account=models.IntegerField(null=True, blank=True)
+    bank=models.ForeignKey(Bank, null=True, blank=True)
 
-    max_mount_receiver=models.IntegerField(blank=True)
-    max_mount_delivery=models.IntegerField(blank=True)
+    max_mount_receiver=models.IntegerField(null=True, blank=True)
+    max_mount_delivery=models.IntegerField(null=True, blank=True)
 
     objects = AccountManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
-    email_validation = models.CharField(max_length=20, choices=VALIDATION_STATE)
-    mobile_validation = models.CharField(max_length=20, choices=VALIDATION_STATE)
+    email_validation = models.CharField(null=True, max_length=20, choices=VALIDATION_STATE)
+    mobile_validation = models.CharField(null=True, max_length=20, choices=VALIDATION_STATE)
 
 
     def __unicode__(self):

@@ -5,6 +5,7 @@ from rest_framework.renderers import JSONRenderer
 from giros.models import Giros
 from giros.permissions import IsSenderOfMoney
 from giros.serializers import GirosSerializer
+from authentication.models import Account, Province, City
 import json
 
 
@@ -45,7 +46,11 @@ class GirosView(generics.ListCreateAPIView):
         mobile_receiver = self.request.GET.get('celular')
         document_type_receiver = self.request.GET.get('tipoDoc')
         document_receiver = self.request.GET.get('documento')
-        city_receiver = self.request.GET.get('municipio')
+        municipio = self.request.GET.get('municipio')
+        city_receiver = City.objects.filter(dane_code=municipio)
+        print city_receiver
+        city_receiver = city_receiver.get(pk=city_receiver)
+        print city_receiver
         correspondent_receiver = self.request.GET.get('usuarioCorresponsal')
         commission_total = 5000
         commission_correspondent_delivery = commission_total * 0.4
