@@ -1,7 +1,7 @@
 from rest_framework import permissions, viewsets, generics
 from authentication.models import Account, Province, City
 from authentication.permissions import IsAccountOwner
-from authentication.serializers import AccountSerializer, DepartamentoSerializer,MuniciposSerializer, CorresponsalSerializer
+from authentication.serializers import AccountSerializer, DepartamentoSerializer,MuniciposSerializer, CorresponsalSerializer, CompletaRegistroSerializer
 from django.utils.decorators import method_decorator
 from rest_framework.response import Response
 import json
@@ -114,3 +114,30 @@ class ConsultaCorresponsalView(generics.ListAPIView):
                 queryset = queryset.filter(city=city)
         return queryset
         
+class CompletaRegistroViewSet(generics.UpdateAPIView):
+    queryset = Account.objects.all()
+    serializer_class = CompletaRegistroSerializer
+    
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(self, request, *args, **kwargs)
+
+    def put(self, request):
+        email = self.request.GET.get('email')
+        city = self.request.GET.get('city')
+        address = self.request.GET.get('address')
+        phone_number = self.request.GET.get('phone_number')
+        genere = self.request.GET.get('genere')
+        income_source = self.request.GET.get('income_source')
+        bank = self.request.GET.get('bank')
+        bank_account = self.request.GET.get('bank_account')
+        queryset = Account.objects.filter(email=email).update(city=city, address=address,
+            phone_number=phone_number, genere=genere, income_source=income_source,
+            bank=bank, bank_account=bank_account)
+        return Response({
+                    'status': 'Created',
+                    'message': 'User created successfully'
+                },status=status.HTTP_201_CREATED)
+
+class UsuariosView(generics.ListAPIView):
+    serializer_class = CompletaRegistroSerializer
+    queryset = Account.objects.all()
