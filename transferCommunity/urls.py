@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url, include
 from django.contrib import admin
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework_nested import routers
-from authentication.views import AccountViewSet, LoginView, LogoutView, DepartamentosView, DepartamentosIdView, ConsultaCorresponsalView, CompletaRegistroViewSet, UsuariosView
+from authentication.views import AccountViewSet, LoginView, LogoutView, DepartamentosView, DepartamentosIdView, ConsultaCorresponsalView, CompletaRegistroViewSet, UsuariosView, BankView
 from giros.views import AccountGirosViewSet, GirosView
 from authentication import models
 
@@ -28,6 +28,7 @@ urlpatterns = [
      url(r'^iniciarGiro/$', GirosView.as_view(), name='iniciar-giro'),
      url(r'^completaRegistroCliente/datosComplementarios/$', CompletaRegistroViewSet.as_view(), name='completa-registro'),
      url(r'^completaRegistroCliente/UsuariosList/$', UsuariosView.as_view(), name='usuarios-list'),
+     url(r'^consultarBancos/$', BankView.as_view(), name='bancos-list'),
  ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

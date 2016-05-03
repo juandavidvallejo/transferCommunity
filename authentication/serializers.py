@@ -3,6 +3,8 @@ from django.contrib.auth import update_session_auth_hash
 from rest_framework import serializers
 
 from authentication.models import Account, DocumentType, City, Province
+from miscellaneous.models import Bank
+
 
 class DocumentTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -78,4 +80,29 @@ class CorresponsalSerializer(serializers.ModelSerializer):
         ciudad = self.context.get('ciudad')
         data = obj.getDistancia(longitud, latitud, monto, ciudad)
         return data
+
+class CompletaRegistroSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ('id', 'email', 'username', 'created_at', 'updated_at',
+                  'first_name', 'last_name', 'mobile_number', 'document_type', 
+                  'num_id','city', 'address', 'phone_number', 'genere', 
+                  'income_source', 'bank', 'bank_account',)
+        read_only_fields = ('created_at', 'updated_at',)
+
+        def create(self, validated_data):
+            return Account.objects.create(**validated_data)
+
+        def update(self, instance, validated_data):
+            instance.username = validated_data.get('username', instance.username)
+            print "Imprime instance.username: ", instance.username
+            instance.save()
+
+            update_session_auth_hash(self.context.get('request'), instance)
+
+            return instance
     
+class BankSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bank
+        fields = ('cod','name')

@@ -1,13 +1,15 @@
 from rest_framework import permissions, viewsets, generics
 from authentication.models import Account, Province, City
 from authentication.permissions import IsAccountOwner
-from authentication.serializers import AccountSerializer, DepartamentoSerializer,MuniciposSerializer, CorresponsalSerializer, CompletaRegistroSerializer
+from authentication.serializers import AccountSerializer, DepartamentoSerializer,MuniciposSerializer, CorresponsalSerializer, CompletaRegistroSerializer, BankSerializer
 from django.utils.decorators import method_decorator
 from rest_framework.response import Response
 import json
 from django.contrib.auth import authenticate, login, logout
 from rest_framework import status, views, permissions
 from rest_framework.renderers import JSONRenderer
+from miscellaneous.models import Bank
+
 
 class AccountViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
@@ -141,3 +143,14 @@ class CompletaRegistroViewSet(generics.UpdateAPIView):
 class UsuariosView(generics.ListAPIView):
     serializer_class = CompletaRegistroSerializer
     queryset = Account.objects.all()
+
+class BankView(generics.ListAPIView):
+    serializer_class = BankSerializer
+
+    def get_queryset(self):
+        queryset = Bank.objects.all().order_by('cod')
+        if self.request.GET.get('cod'):
+            cod = self.request.GET.get('cod')
+            queryset = queryset.filter(cod=cod)
+        return queryset
+
