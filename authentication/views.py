@@ -9,7 +9,10 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework import status, views, permissions
 from rest_framework.renderers import JSONRenderer
 from miscellaneous.models import Bank
-
+import os
+from twilio.rest import TwilioRestClient
+import string
+import random
 
 class AccountViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
@@ -27,9 +30,19 @@ class AccountViewSet(viewsets.ModelViewSet):
 
     def create(self, request):
         serializer = self.serializer_class(data=self.request.GET)
+        print self.request.GET
+        print serializer.is_valid(), " errores ",serializer.errors
 
         if serializer.is_valid():
             Account.objects.create_user(**serializer.validated_data)
+            SMS_code = self.id_generator()
+            Account.objects.filter(email=self.request.GET.get('email')).update(SMS_code=SMS_code)
+            accountSID = os.environ.get('TWILIO_ACCOUNT_SID')
+            authToken = os.environ.get('TWILIO_AUTH_TOKEN')
+            twilioCli = TwilioRestClient(accountSID, authToken)
+            myTwilioNumber = '+12673383067'
+            myCellPhone = ''.join(['+57', self.request.GET.get('mobile_number')])
+            message = twilioCli.messages.create(body=SMS_code, from_=myTwilioNumber, to=myCellPhone)
             return Response({
             'status': 'Created',
             'message': 'Account has been successfully created.'
@@ -37,15 +50,21 @@ class AccountViewSet(viewsets.ModelViewSet):
 
         return Response({
             'status': 'Bad request',
-            'message': 'Account could not be created with received data.'
+            'message': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
+
+    def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+        return ''.join(random.choice(chars) for _ in range(6))
 
 class LoginView(views.APIView):
     def post(self, request, format=None):
-        data = json.loads(request.body)
+        #data = json.loads(request.body)
 
-        email = data.get('email', None)
-        password = data.get('password', None)
+        #email = data.get('email', None)
+        #password = data.get('password', None)
+
+        email = self.request.GET.get('email')
+        password = self.request.GET.get('password')
 
         account = authenticate(email=email, password=password)
 
@@ -154,3 +173,19 @@ class BankView(generics.ListAPIView):
             queryset = queryset.filter(cod=cod)
         return queryset
 
+class ValidateCode(views.APIView):
+
+    def post(self, request, format=None):
+        code = self.request.GET.get('code')
+        email = self.request.GET.get('email')
+        account = Account.objects.filter(email=email)
+        if account.filter(SMS_code=code).count() > 0:
+            return Response({
+                'status': 'Validated',
+                'message': 'Code was validated successfully'
+                }, status=status.HTTP_201_CREATED)
+        
+        return Response({
+            'status': 'Bad request',
+            'message': 'Code invalid'
+        }, status=status.HTTP_400_BAD_REQUEST)

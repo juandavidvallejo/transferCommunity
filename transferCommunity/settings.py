@@ -138,9 +138,9 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-    ),
+    #'DEFAULT_AUTHENTICATION_CLASSES': (
+    #    'rest_framework.authentication.SessionAuthentication',
+    #),
     'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
     'PAGINATE_BY': 10
 }
